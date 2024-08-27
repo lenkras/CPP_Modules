@@ -10,3 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Zombie.hpp"
+
+int main()
+{
+	Zombie *heapZomb = newZombie("BumHeap");
+	heapZomb->announce();
+
+	Zombie stackZomb("Babam");
+	stackZomb.announce();
+	
+	randomChump("Bam");
+	delete(heapZomb);
+	return(0);
+}
