@@ -28,26 +28,11 @@ private:
 public:
 	void contactInfo();
 
-	std::string getFirstName()const
-	{
-		return (first_name);
-	}
-	std::string getLastName()const
-	{
-		return (last_name);
-	}
-	std::string getNickname()const
-	{
-		return (nickname);
-	}
-	std::string getPhoneNumber()const
-	{
-		return (phone_number);
-	}
-	std::string getSecret()const
-	{
-		return (darkest_secret);
-	}
+	std::string getFirstName()const;
+	std::string getLastName()const;
+	std::string getNickname()const;
+	std::string getPhoneNumber()const;
+	std::string getSecret()const;
 };
 
 #endif
