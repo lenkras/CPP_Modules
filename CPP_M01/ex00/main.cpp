@@ -17,10 +17,10 @@ int main()
 	Zombie *heapZomb = newZombie("BumHeap");
 	heapZomb->announce();
 
-	Zombie stackZomb("Babam");
+	Zombie stackZomb("BabamStack");
 	stackZomb.announce();
 	
-	randomChump("Bam");
+	randomChump("BamChump");
 	delete(heapZomb);
 	return(0);
 }
