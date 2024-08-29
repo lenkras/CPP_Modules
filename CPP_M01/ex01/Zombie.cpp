@@ -10,3 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Zombie.hpp"
+
+Zombie::Zombie()
+{
+	std::cout << "Zombie created." << std::endl;
+}
+
+void Zombie:: announce()
+{
+	std::cout << "---------------------------" << std::endl;
+	std::cout << name << ": BraiiiiiiiinnnzzzZ..." << std::endl;
+	std::cout << "---------------------------" << std::endl;
+}
+
+Zombie::~Zombie()
+{
+	std::cout << name << " has been destroyed." << std::endl;
+}
+
+void Zombie:: setName(std::string name)
+{
+	this->name = name;
+}
