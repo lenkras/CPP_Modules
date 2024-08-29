@@ -67,6 +67,13 @@ void PhoneBook::searchContact()
 		std::cin >> index;
 		if (std::cin.eof())
 			break ;
+		if (!std::cin >> index)
+		{
+			std::cout << "Invalid index." << std::endl;
+			std::cin.clear();
+			std::cin.ignore();
+			continue ;
+		}
 		if (index >= 0 && index <= 7 && !contacts[index].getFirstName().empty())
 		{
 			std::cout << "First Name: " << contacts[index].getFirstName() << std::endl;
