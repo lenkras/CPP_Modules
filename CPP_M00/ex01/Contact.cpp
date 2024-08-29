@@ -17,7 +17,8 @@ std::string Contact::getFirstName() const
     return (first_name);
 }
 
-std::string Contact::getLastName() const {
+std::string Contact::getLastName() const
+{
     return (last_name);
 }
 
