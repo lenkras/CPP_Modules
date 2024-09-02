@@ -21,4 +21,6 @@ int main()
 	start.complain("WARNING");
 	start.complain("ERROR");
 	start.complain("Come on");
+
+	return (0);
 }
