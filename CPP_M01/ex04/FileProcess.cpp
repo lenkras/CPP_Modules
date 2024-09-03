@@ -65,7 +65,11 @@ void FileProcess::writeToFile(const std::string &content)
 void FileProcess::processFile()
 {
 	std::string content = readFile();
-
+	if (content.empty())
+	{
+		std::cerr << "File is empty or could not be read: check permission." << std::endl;
+		return ;
+	}
 	std::string replaced = replaceString(content, _s1, _s2);
 	writeToFile(replaced);
 }
