@@ -24,5 +24,5 @@ void Zombie:: announce()
 
 Zombie::~Zombie()
 {
-	std::cout << name << " has been destroyed." << std::endl;
+	std::cout << name << " has been destroyed on stack." << std::endl;
 }
