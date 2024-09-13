@@ -10,29 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ClapTrap.hpp"
+#include "ScavTrap.hpp"
 
 int main()
 {
-	ClapTrap clap1;
-	ClapTrap clap2("Mau");
-	ClapTrap clap3(clap2);
+	std::cout << "Creating ClapTrap..." << std::endl;
+    ClapTrap clap("Clappy");
 
-	clap1 = clap2;
-	clap1.attack("WOOO");
-	clap1.takeDamage(2);
-	clap1.takeDamage(5);
+    // Test attack method of ClapTrap
+    clap.attack("Target 1");
+	clap.takeDamage(2);
+	clap.takeDamage(5);
 
-	clap1.beRepaired(3);
+	clap.beRepaired(3);
 
-	for (int i = 0; i < 10; ++i) {
-        clap1.attack("AAAAHH");
-    }
 
-	clap1.takeDamage(20);
-	clap1.beRepaired(10);
+    // Test creation of ScavTrap
+    std::cout << "\nCreating ScavTrap..." << std::endl;
+    ScavTrap scav("Scavvy");
 
-	clap1.attack("Final Target");
-    clap1.beRepaired(1);
+    // Test attack method of ScavTrap (overridden)
+    scav.attack("Target 2");
+	scav.takeDamage(20);
+	scav.takeDamage(5);
+
+	scav.beRepaired(3);
+
+    // Test ScavTrap special ability
+    scav.guardGate();
+
+    std::cout << "\nExiting program, destructors will be called..." << std::endl;
+
 	return (0);
 }
