@@ -12,51 +12,38 @@
 
 #include "Fixed.hpp"
 
-Fixed::Fixed():_fixedInt(0)
-{
-	//std::cout << "Default constructor called."<< std::endl;
-}
+Fixed::Fixed():_fixedInt(0){}
 
 Fixed::Fixed(const Fixed& num)
 {
 	*this = num;
-	//std::cout << "Copy constructor called." << std::endl;
 }
 
 Fixed& Fixed::operator=(const Fixed& num)
 {
-	//std::cout << "Copy assignment operator called." << std::endl;
 	if (this != &num)
 		this->_fixedInt = num.getRawBits();
 	return (*this);
 }
 
-Fixed::~Fixed()
-{
-	//std::cout << "Destructor called." << std::endl;
-}
+Fixed::~Fixed(){}
 
 int Fixed::getRawBits()const
 {
-	//std::cout << "getRawBits member function called." << std::endl;
 	return (this->_fixedInt);
 }
 
 void Fixed::setRawBits(int const raw)
 {
 	this->_fixedInt = raw;
-	//std::cout << "setRawBits member function called." << std::endl;
 }
 
 Fixed::Fixed(const int& integer_val)
 {
-	//std::cout << "Int constructor called." << std::endl;
 	_fixedInt = integer_val << _numBits;
-
 }
 Fixed::Fixed(const float& float_val)
 {
-	//std::cout << "Float constructor called." << std::endl;
 	_fixedInt = roundf(float_val * (1 << _numBits));
 }
 
@@ -78,7 +65,7 @@ std::ostream& operator<<(std::ostream &print, const Fixed &klass)
 	return (print);
 }
 
-bool::Fixed::operator>(const Fixed& num)const
+bool Fixed::operator>(const Fixed& num)const
 {
 	if (_fixedInt > num._fixedInt)
 		return (true);
@@ -86,7 +73,7 @@ bool::Fixed::operator>(const Fixed& num)const
 		return (false);
 }
 
-bool::Fixed:: operator<(const Fixed& num)const
+bool Fixed:: operator<(const Fixed& num)const
 {
 	if (_fixedInt < num._fixedInt)
 		return (true);
@@ -94,7 +81,7 @@ bool::Fixed:: operator<(const Fixed& num)const
 		return (false);
 }
 
-bool::Fixed::operator<=(const Fixed& num)const
+bool Fixed::operator<=(const Fixed& num)const
 {
 	if(_fixedInt <= num._fixedInt)
 		return (true);
@@ -102,7 +89,7 @@ bool::Fixed::operator<=(const Fixed& num)const
 		return (false);
 }
 
-bool::Fixed::operator>=(const Fixed& num)const
+bool Fixed::operator>=(const Fixed& num)const
 {
 	if(_fixedInt >= num._fixedInt)
 		return (true);
@@ -110,7 +97,7 @@ bool::Fixed::operator>=(const Fixed& num)const
 		return (false);
 }
 
-bool::Fixed::operator==(const Fixed& num)const
+bool Fixed::operator==(const Fixed& num)const
 {
 	if(_fixedInt == num._fixedInt)
 		return (true);
@@ -118,7 +105,7 @@ bool::Fixed::operator==(const Fixed& num)const
 		return (false);
 }
 
-bool::Fixed::operator!=(const Fixed& num)const
+bool Fixed::operator!=(const Fixed& num)const
 {
 	if(_fixedInt != num._fixedInt)
 		return (true);
@@ -180,7 +167,7 @@ Fixed Fixed::operator--(int)
 	return(temp);
 }
 
-Fixed&::Fixed::min(Fixed& a, Fixed& b)
+Fixed& Fixed::min(Fixed& a, Fixed& b)
 {
 	if (a < b)
 		return (a);
@@ -188,7 +175,7 @@ Fixed&::Fixed::min(Fixed& a, Fixed& b)
 		return(b);
 }
 
-const Fixed&::Fixed::min(const Fixed& a, const Fixed& b)
+const Fixed& Fixed::min(const Fixed& a, const Fixed& b)
 {
 	if (a < b)
 		return (a);
@@ -196,7 +183,7 @@ const Fixed&::Fixed::min(const Fixed& a, const Fixed& b)
 		return(b);
 }
 
-Fixed&::Fixed::max(Fixed& a, Fixed& b)
+Fixed& Fixed::max(Fixed& a, Fixed& b)
 {
 	if (a > b)
 		return (a);
@@ -204,7 +191,7 @@ Fixed&::Fixed::max(Fixed& a, Fixed& b)
 		return(b);
 }
 
-const Fixed&::Fixed::max(const Fixed& a, const Fixed& b)
+const Fixed& Fixed::max(const Fixed& a, const Fixed& b)
 {
 	if (a > b)
 		return (a);
