@@ -38,14 +38,12 @@ Fixed::~Fixed()
 
 int Fixed::getRawBits()const
 {
-	//std::cout << "getRawBits member function called." << std::endl;
 	return (this->_fixedInt);
 }
 
 void Fixed::setRawBits(int const raw)
 {
 	this->_fixedInt = raw;
-	//std::cout << "setRawBits member function called." << std::endl;
 }
 
 Fixed::Fixed(const int& integer_val)
