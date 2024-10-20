@@ -23,7 +23,13 @@ int main()
     delete dog;
     delete cat;
     
-    const int size = 4;
+    std::cout << "----------CREATE AN ANIMAL ARRAY-----------"<< std::endl;
+    const int size = 13;
+    if (size <= 0 || size > 100)
+    {
+        std::cerr<< "Size of array should be in range of 1 - 100."<< std::endl;
+        return (1);
+    }
      Animal *animals[size];
     for (int i = 0; i < size / 2; i++)
     {
@@ -37,10 +43,14 @@ int main()
     {
         animals[i]->makeSound();
     }
+    std::cout << "--------TEST FOR DEEP COPY---------"<< std::endl;
+    Dog currentDog;
+    Dog copyDog(currentDog);
+    copyDog.makeSound();
+    std::cout<< "-------CLEAN UP EVERYTHING---------"<< std::endl;
 	for (int i = 0; i < size; i++)
     {
         delete animals[i];
     }
-
 	return (0);
 }
