@@ -51,5 +51,3 @@ std::string Animal::getType()const
 {
 	return (this->type);
 }
-
-

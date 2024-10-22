@@ -21,7 +21,7 @@ Cat::Cat():Animal()
 Cat::Cat(const Cat& copy): Animal(copy)
 {
 	type = "Cat";
-	std::cout << "Cat copy constructor is called." << std::endl;
+	std::cout << "Cat copy constructor called." << std::endl;
 }
 
 Cat::~Cat()
@@ -31,7 +31,7 @@ Cat::~Cat()
 
 Cat& Cat::operator=(const Cat& copy)
 {
-	std::cout << "Cat assign operator is called."<< std::endl;
+	std::cout << "Cat assign operator called."<< std::endl;
 	if (this != &copy)
 		type = copy.type;
 	return (*this);
