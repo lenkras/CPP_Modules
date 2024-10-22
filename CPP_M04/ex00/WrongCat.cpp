@@ -14,24 +14,24 @@
 
 WrongCat::WrongCat(): WrongAnimal()
 {
-	std::cout << "WrongCat default contructor is called."<< std::endl;
+	std::cout << "WrongCat default contructor called."<< std::endl;
 	type = "WrongCat";
 }
 
 WrongCat::~WrongCat()
 {
-	std::cout << "WrongCat destructor is called." << std::endl;
+	std::cout << "WrongCat destructor called." << std::endl;
 }
 
 WrongCat::WrongCat(WrongCat const &other): WrongAnimal(other)
 {
-	std::cout << "WrongCat copy contructor is called."<< std::endl;
+	std::cout << "WrongCat copy contructor called."<< std::endl;
 	type = "WrongCat";
 }
 
 WrongCat & WrongCat::operator=(const WrongCat &other)
 {
-	std::cout << "WrongCat assign operator is called." << std::endl;
+	std::cout << "WrongCat assign operator called." << std::endl;
 	if (this != &other)
 		type = other.type;
 	return (*this);
