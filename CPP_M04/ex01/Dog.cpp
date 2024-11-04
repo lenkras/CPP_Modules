@@ -46,5 +46,5 @@ Dog& Dog::operator=(const Dog& copy)
 
 void Dog::makeSound()const
 {
-	std::cout << "Woof Woof. I have a brain too!"<< std::endl;
+	std::cout << "Woof Woof. I have a brain at "<< brain << std::endl;
 }
