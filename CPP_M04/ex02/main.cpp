@@ -18,6 +18,8 @@
 
 int main()
 {
+    //const Animal testAnimal;
+    
     std::cout << "----------CREATE AN ANIMAL ARRAY-----------"<< std::endl;
     const int size = 13;
     if (size <= 0 || size > 100)
@@ -25,7 +27,7 @@ int main()
         std::cerr<< "Size of array should be in range of 1 - 100."<< std::endl;
         return (1);
     }
-     Animal *animals[size];
+    Animal *animals[size];
     for (int i = 0; i < size / 2; i++)
     {
         animals[i] = new Dog();
