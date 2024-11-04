@@ -37,11 +37,14 @@ int main()
 	std::cout << "\nTesting WrongAnimal hierarchy:\n";
     const WrongAnimal* wrongMeta = new WrongAnimal();
     const WrongAnimal* wrongCat = new WrongCat();
+    WrongCat anotherCat;
 
     std::cout << "Get WrongCat type: "<< wrongCat->getType() << " " << std::endl;
+    std::cout << "Get type of WrongCat class: " << anotherCat.getType() << std::endl;
 
     wrongCat->makeSound(); 
     wrongMeta->makeSound();
+    anotherCat.makeSound();
     delete wrongMeta;
     delete wrongCat;
 
