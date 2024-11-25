@@ -16,49 +16,46 @@ int main()
 {
     try
     {
-        Bureaucrat john("John", 1); // Grade 1, highest possible
-        Bureaucrat jane("Jane", 150); // Grade 150, lowest possible
+        Bureaucrat john("John", 1);
+        Bureaucrat jane("Jane", 114); 
 
-        Form form1("Form1", 50, 100); // Form requiring grade 50 to sign, grade 100 to execute
-        Form form2("Form2", 30, 50); // Form requiring grade 30 to sign, grade 50 to execute
+        Form form1("Form1", 50, 100);
+        Form form2("Form2", 30, 50);
+        std::cout << form1 << std::endl;
+        std::cout << form2 << std::endl;
 
+        form1.beSigned(john);
+        form2.beSigned(jane);
         std::cout << form1 << std::endl;
-        john.signForm(form1); // John should sign this form
+        john.signForm(form1);
         std::cout << form1 << std::endl;
-        jane.signForm(form1); // Jane shouldn't be able to sign this form
+        jane.signForm(form1); 
 
         std::cout << form2 << std::endl;
-        john.signForm(form2); // John should sign this form
+        john.signForm(form2); 
         std::cout << form2 << std::endl;
-        jane.signForm(form2); // Jane shouldn't be able to sign this form
+        jane.signForm(form2);
 
-        // Test copy constructor for Bureaucrat
-        Bureaucrat johnCopy(john); // Copy constructor should be called
+        Bureaucrat johnCopy(john);
         std::cout << "Copy of John: " << johnCopy << std::endl;
 
-        // Test assignment operator for Bureaucrat
         Bureaucrat janeAssigned;
-        janeAssigned = john; // Assignment operator should be called
+        janeAssigned = john; 
         std::cout << "Assigned to Jane: " << janeAssigned << std::endl;
 
-        // Test copy constructor for Form
-        Form form1Copy(form1); // Copy constructor for Form should be called
+       
+        Form form1Copy(form1); 
         std::cout << "Copy of Form1: " << form1Copy << std::endl;
         
-
-        // Test assignment operator for Form
-        Form form2Assigned("Temporary", 40, 90); // First create an object
+        Form form2Assigned("Temporary", 40, 90); 
         std::cout << "Before assignment: " << form2Assigned << std::endl;
 
-        form2Assigned = form2; // This invokes the assignment operator
+        form2Assigned = form2;
         std::cout << "After assignment: " << form2Assigned << std::endl;
 
-        // Modify and check if the copies are independent
-        form2Assigned.beSigned(john); // John should sign the assigned form
+        form2Assigned.beSigned(john);
         std::cout << "After John signs form2Assigned: " << form2Assigned << std::endl;
         std::cout << "Original Form2 (should not change): " << form2 << std::endl;
-
-
     }
     catch (const std::exception &e)
     {
