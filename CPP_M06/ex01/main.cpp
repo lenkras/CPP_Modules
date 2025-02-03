@@ -14,10 +14,10 @@
 
 int main()
 {
-	Data value = {6};
+	Data value = {15};
 
 	uintptr_t num = Serializer::serialize(&value);
-	std::cout<< "Serialized value as a number: "<< num<< std::endl;
+	std::cout<< "Serialized value as a number: "<< num << std::endl;
 	Data *ptr = Serializer::deserialize(num);
 	std::cout << "Original pointer: " << &value << std::endl;
 	std::cout << "Deserialized pointer: " << ptr << std::endl;
@@ -29,4 +29,5 @@ int main()
 	else{
 		 std::cout << "Failure: The pointers are not the same." << std::endl;
 	}
+	return 0;
 }
