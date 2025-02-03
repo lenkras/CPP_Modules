@@ -15,7 +15,7 @@
 int main()
 {
 	std::srand(std::time(nullptr));
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		Base *ptr = Base::generate();
 		Base::identify(ptr);
