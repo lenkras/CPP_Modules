@@ -41,7 +41,7 @@ static void processInt(long n)
 
 static void processFloat(double n)
 {
-	if (!std::isinf(n) && !std::isnan(n) && (n < -std::numeric_limits<float>::min() || \
+	if (!std::isinf(n) && !std::isnan(n) && (n < std::numeric_limits<float>::lowest() || \
 			n > std::numeric_limits<float>::max()))
 	{
 		std::cout<< "float: impossible"<< std::endl;
@@ -51,7 +51,7 @@ static void processFloat(double n)
 
 static void processDouble(double n)
 {
-	if (!std::isinf(n) && !std::isnan(n) && (n < -std::numeric_limits<double>::min() || \
+	if (!std::isinf(n) && !std::isnan(n) && (n < std::numeric_limits<double>::lowest() || \
 			n > std::numeric_limits<double>::max()))
 	{
 		std::cout<< "double: impossible"<< std::endl;
@@ -98,12 +98,8 @@ void ScalarConverter::convert(std::string arg)
 {
 	try
 	{
-		std::regex pattern(R"(^[-+]?\d+(\.\d+)?f?$)");
 		if (arg.length() == 1 && isalpha(arg[0]))
 			convertToChar(arg[0]);
-		else if (arg != "inf" && arg != "-inf" && arg != "nan" && arg != "inff" && arg != "-inff" \
-				&& arg != "nanf" && !std::regex_match(arg, pattern))
-			throw std::invalid_argument(arg);
 		else if (arg == "inff" || arg == "-inff" || arg == "nanf" || \
 				(arg.find('.') != std::string::npos && arg.find('f') != std::string::npos))
 			convertToFloat(arg);
@@ -111,10 +107,6 @@ void ScalarConverter::convert(std::string arg)
 			convertToDouble(arg);
 		else
 			convertToInt(arg);
-	}
-	catch (std::invalid_argument &e)
-	{
-		std::cerr << "Invalid argument: " << e.what() << std::endl;
 	}
 	catch(std::exception& e)
 	{
