@@ -94,22 +94,83 @@ static void convertToInt(std::string arg)
 	processDouble(n);
 }
 
+static bool isValidIntString(const std::string& str) {
+    for (size_t i = 0; i < str.length(); ++i) 
+	{
+        if (!(std::isdigit(str[i]) || (i == 0 && (str[i] == '-' || str[i] == '+'))))
+		{
+            return false;
+		}
+    }
+    return true;
+}
+
+static bool isSpecialInput(const std::string& arg) 
+{
+    if (arg == "+inf" || arg == "-inf" || arg == "nan" || 
+        arg == "+inff" || arg == "-inff" || arg == "nanf")
+	{
+        return true;
+	}
+    return false;
+}
+
+
 void ScalarConverter::convert(std::string arg)
 {
 	try
 	{
-		if (arg.length() == 1 && isalpha(arg[0]))
-			convertToChar(arg[0]);
-		else if (arg == "inff" || arg == "-inff" || arg == "nanf" || \
-				(arg.find('.') != std::string::npos && arg.find('f') != std::string::npos))
-			convertToFloat(arg);
-		else if(arg == "inf" || arg == "-inf" || arg == "nan" || arg.find('.') != std::string::npos)
-			convertToDouble(arg);
+		if (isSpecialInput(arg))
+		{
+            if (arg == "+inf" || arg == "-inf" || arg == "nan")
+                convertToDouble(arg);
+			else if (arg == "+inff" || arg == "-inff" || arg == "nanf")
+                convertToFloat(arg);
+			return ;
+        }
+		if (arg.find('.')!= std::string::npos)
+		{
+			 if (arg.back() == 'f') 
+            {
+                if (std::count(arg.begin(), arg.end(), '.') > 1)
+                {
+                    throw std::invalid_argument("Invalid format: multiple dots found.");
+                }
+                if (!std::isdigit(arg[arg.length() - 2])) 
+                {
+                    throw std::invalid_argument("Invalid format: character before 'f' is not a digit.");
+                }
+                convertToFloat(arg);
+            }
+            else if (std::isdigit(arg.back()))
+            {
+                if (std::count(arg.begin(), arg.end(), '.') > 1 || !isValidIntString(arg))
+                {
+                    throw std::invalid_argument("Invalid format");
+                }
+                convertToDouble(arg);
+            }
+			else{
+				throw std::invalid_argument("Invalid format of input");
+			}
+		}
 		else
-			convertToInt(arg);
+		{
+			if (arg.length() == 1 && isalpha(arg[0]))
+				convertToChar(arg[0]);
+			else if (isValidIntString(arg))
+				convertToInt(arg);
+			else
+			{
+				throw std::invalid_argument("Invalid format of input");
+			}
+		}
 	}
 	catch(std::exception& e)
 	{
-		std::cerr << "Error: some exception " << e.what() << std::endl;
+		std::cerr << "Error: some exception: " << e.what() << std::endl;
 	}
+	catch (const std::invalid_argument& e) {
+        std::cerr << "Error: Invalid argument: " << e.what() << std::endl;
+    }
 }
