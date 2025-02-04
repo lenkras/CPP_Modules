@@ -13,10 +13,9 @@
 #include <stdexcept>
 #include "ScalarConverter.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
 	try {
-        // Check if the number of arguments is correct (should be 2)
         if (argc != 2) {
             throw std::invalid_argument("Invalid number of arguments.");
         }
@@ -25,7 +24,7 @@ int main(int argc, char** argv)
 
     } catch (const std::invalid_argument& e) {
         std::cerr << "Error: " << e.what() << std::endl;
-        return 1;  // Return an error code to indicate failure
+        return 1;
     } catch (const std::exception& e) {
         std::cerr << "Unexpected error: " << e.what() << std::endl;
         return 1;
