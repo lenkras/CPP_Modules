@@ -56,7 +56,7 @@ int main()
     	}
     	std::cout << std::endl;
 
-    	// Uncomment the following line to test the immutability of const operator[]
+    	// Uncomment this / const operator[]
 		 //constArr[0] = 100; // This will give a compilation error
 
 		Array<int>& nonconstArr = intArray;
