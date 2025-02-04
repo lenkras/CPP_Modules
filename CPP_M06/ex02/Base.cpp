@@ -23,7 +23,6 @@ Base::~Base()
 
 Base* Base::generate()
 {
-	//std::srand(std::time(nullptr));
 	int num = std::rand() % 31;
 	if (num < 11)
 	{
@@ -43,6 +42,11 @@ Base* Base::generate()
 
 void Base::identify(Base *p)
 {
+	if (!p)
+	{
+		std::cout<< "Null pointer passed."<< std::endl;
+		return ;
+	}
 	if (dynamic_cast<A*>(p)){
 		std::cout<< "A identified."<< std::endl;
 	}
@@ -59,7 +63,25 @@ void Base::identify(Base *p)
 	}
 }
 
-void Base::identify(Base& p) {
-    // Using dynamic_cast with references is not directly possible. We will cast to pointers to identify the type.
-    identify(&p);
+void Base::identify(Base& p)
+{
+   try{
+		(void)dynamic_cast<A&>(p);
+		std::cout<< "A identified."<< std::endl;
+   }
+	catch(const std::bad_cast&){
+		try{
+			(void)dynamic_cast<B&>(p);
+			std::cout<< "B identified."<< std::endl;
+		}
+		catch (const std::bad_cast&){
+			try{
+				(void)dynamic_cast<C&>(p);
+				std::cout<< "C identified."<< std::endl;
+			}
+			catch(const std::bad_cast&){
+				std::cout << "Unknown type!" << std::endl;
+			}
+		}
+	}
 }
