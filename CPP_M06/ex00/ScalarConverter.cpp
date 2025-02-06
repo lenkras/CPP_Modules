@@ -97,10 +97,13 @@ static void convertToInt(std::string arg)
 static bool isValidIntString(const std::string& str) {
     for (size_t i = 0; i < str.length(); ++i) 
 	{
-        if (!(std::isdigit(str[i]) || (i == 0 && (str[i] == '-' || str[i] == '+'))))
+        if (!(std::isdigit(str[i]) && (i == 0 && (str[i] == '-' || str[i] == '+'))))
 		{
-            return false;
+            continue ;
 		}
+		else if (!std::isdigit(str[i])) {
+            return false; // Invalid character
+        }
     }
     return true;
 }
@@ -132,7 +135,7 @@ void ScalarConverter::convert(std::string arg)
 		{
 			 if (arg.back() == 'f') 
             {
-                if (std::count(arg.begin(), arg.end(), '.') > 1)
+                if (std::count(arg.begin(), arg.end(), '.') > 1 || !isValidIntString(arg))
                 {
                     throw std::invalid_argument("Invalid format: multiple dots found.");
                 }
@@ -142,7 +145,7 @@ void ScalarConverter::convert(std::string arg)
                 }
                 convertToFloat(arg);
             }
-            else if (std::isdigit(arg.back()))
+            else if (std::isdigit(arg.back()) || arg.back() == '.')
             {
                 if (std::count(arg.begin(), arg.end(), '.') > 1 || !isValidIntString(arg))
                 {
