@@ -7,3 +7,4 @@
 - CPP_M05 - Mastering Control Flow with Loops and handle Errors using Try-Catch for Exception Management
 - CPP_M06 - Learning the different Types of C++ Casts (static, dynamic, const, and reinterpret) and their Appropriate Use Cases for Type Conversions
 - CPP_M07 - Understanding and Implementing Templates to write Type-Independent code for Functions and Classes
+- CPP_M08 - Implementing Templated Containers, using Iterators, and applying Algorithms to efficiently manage and manipulate Data Structures
