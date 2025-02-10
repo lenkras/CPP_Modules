@@ -46,7 +46,7 @@ int main()
 	std::stack<int> tempStack = s; 
 	 while (!tempStack.empty())
     {
-        std::cout << "Element: " << tempStack.top() << std::endl;// this prints from top to
+        std::cout << "Element: " << tempStack.top() << std::endl;// this prints from top to bottom
         tempStack.pop();
     }
 
