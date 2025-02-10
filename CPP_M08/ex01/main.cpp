@@ -30,13 +30,20 @@ int main()
 	} catch (const std::out_of_range& e) {
         std::cout << "Error: " << e.what() << std::endl;
     }
+	std::cout<< "----- Test with addNumbers() -----\n";
+	try{
+		Span arr(15);
+		arr.addNumbers();
 
-	Span arr(15);
-	arr.addNumbers();
+		std::cout << arr.shortestSpan() << std::endl;
+		std::cout << arr.longestSpan() << std::endl;
 
-	std::cout << arr.shortestSpan() << std::endl;
-	std::cout << arr.longestSpan() << std::endl;
-
+	}catch(const std::logic_error& e){
+		std::cout << "Error calculating span for arr: " << e.what() << std::endl;
+	}catch (const std::out_of_range& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+	std::cout<< "----- Test with small array -----\n";
 	Span minArr(1);
 
 	minArr.addNumbers();
@@ -45,6 +52,9 @@ int main()
         std::cout << "Longest Span in 'minArr': " << minArr.longestSpan() << std::endl;
     } catch (const std::logic_error& e) {
         std::cout << "Error calculating span for minArr: " << e.what() << std::endl;
+    }
+	catch (const std::out_of_range& e) {
+        std::cout << "Error: " << e.what() << std::endl;
     }
 
 }
