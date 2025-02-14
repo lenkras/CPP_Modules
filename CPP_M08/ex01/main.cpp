@@ -32,7 +32,7 @@ int main()
     }
 	std::cout<< "----- Test with addNumbers() -----\n";
 	try{
-		Span arr(15);
+		Span arr(1000);
 		arr.addNumbers();
 
 		std::cout << arr.shortestSpan() << std::endl;

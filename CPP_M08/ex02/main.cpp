@@ -13,7 +13,6 @@
 #include "MutantStack.hpp"
 #include <list>
 
-
 int main()
 {
 	MutantStack<int> mstack;

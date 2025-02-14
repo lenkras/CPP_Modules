@@ -34,7 +34,7 @@ void Span::addNumbers()
 {
 	for (size_t i = 0; i < N; i++)
 	{
-		int num = std::rand() % 100 + 1;
+		int num = std::rand() % 110 + 1;
 		addNumber(num);
 	}
 	// for (size_t i = 0; i < arr.size(); i++)
