@@ -12,49 +12,6 @@
 
 #include "PmergeMe.hpp"
 
-// bool check_input(const std::string &str)
-// {
-// 	std::vector<int> array;
-// 	std::unordered_set<int> seen;
-
-// 	for (size_t i = 0; i < str.length(); ++i)
-// 	{
-// 		if (!isdigit(str[i]) && str[i] != ' ')
-// 		{
-// 			std::cerr<< "Error"<< std::endl;
-// 			return false;
-// 		}
-// 	}
-// 	std::stringstream ss(str);
-// 	int num;
-// 	while (ss >> num)
-// 	{
-// 		if (num > std::numeric_limits<int>::max())
-// 		{
-// 			std::cerr<< "Error: number is too large"<< std::endl;
-// 			return false;
-// 		}
-// 		array.push_back(num);
-// 	}
-// 	for (size_t i = 0; i < array.size(); ++i)
-// 	{
-// 		if (seen.find(array[i]) != seen.end())
-// 		{
-// 			std::cerr<< "Error: duplicates are not allowed."<< std::endl;
-// 			return false;
-// 		}
-// 		else{
-// 			seen.insert(array[i]);
-// 		}
-// 	}
-// 	std::cout << "Before: ";
-//     for (int n : array) {
-//         std::cout << n << " ";
-//     }
-//     std::cout << std::endl;
-// 	return true;
-// }
-
 int main(int argc, char** argv)
 {
 	if (argc < 3)
