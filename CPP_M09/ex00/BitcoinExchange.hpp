@@ -24,18 +24,11 @@
 #include <iomanip>
 #include <cmath>
 
-struct Data{
-	//std::multimap<std::string, float> input;
-	std::vector<std::pair<std::string, float>> input;
-    std::map<std::string, float> rate;
-};
 
 class BitcoinExchange
 {
 	private:
-		Data map;
-		//std::map<std::string, float> result;
-
+		std::map<std::string, float> rate;
 	public:
 		BitcoinExchange();
 		~BitcoinExchange();
@@ -43,6 +36,6 @@ class BitcoinExchange
 		void parseFile(const std::string& file, const char delim);
 		bool checkExtension(const std::string& filename, const std::string& end);
 		bool checkDate(const std::string& date);
-		void calcExchangeRate();
-
+		//void calcExchangeRate();
+		void calcExchangeRate(const std::string& file, const char delim);
 };

@@ -21,9 +21,8 @@ int main(int argc, char** argv)
 	}
 	try{
 		BitcoinExchange bitEx;
-		bitEx.parseFile(argv[1], '|');
 		bitEx.parseFile("data.csv", ',');
-		bitEx.calcExchangeRate();
+		bitEx.calcExchangeRate(argv[1], '|');
 	}
 	catch(const std::ios_base::failure& e){
 		std::cerr<< "File error: "<< e.what()<<std::endl;

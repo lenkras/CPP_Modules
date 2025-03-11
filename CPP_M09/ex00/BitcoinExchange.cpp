@@ -77,39 +77,12 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
     }
 
     std::string line;
-    bool firstLine = true;
-    if (checkExtension(file, "txt") && delim == '|')
+    if (checkExtension(file, "csv") && delim == ',')
     {
-        while (std::getline(inputFile, line))
-        {
-            std::stringstream ss(line);
-            std::string date;
-            float value = 0;
-            if (firstLine)
-            {
-                firstLine = false;
-                continue;
-            }
-            if (std::getline(ss, date, '|'))
-            {
-                date.erase(0, date.find_first_not_of(' '));
-                date.erase(date.find_last_not_of(' ') + 1);
-                if (ss >> value)
-                {
-                    map.input.push_back({date, roundToTwoDecimals(value)});
-                }
-                else
-                {
-                    map.input.push_back({date, 0});
-                }
-            }
-        }
-    }
-    else if (checkExtension(file, "csv") && delim == ',')
-    {
-		
 		while (std::getline(inputFile, line))
 		{
+			if (line.empty())
+				continue ;
 			std::stringstream ss(line);
 			std::string date;
 			float value;
@@ -119,7 +92,8 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
 					continue ;
 				date.erase(0, date.find_first_not_of(' '));
 		        date.erase(date.find_last_not_of(' ') + 1);
-				map.rate[date] += roundToTwoDecimals(value);
+				//map.rate[date] += roundToTwoDecimals(value);
+				rate[date] += roundToTwoDecimals(value);
 			}
 		}		
     }
@@ -132,64 +106,95 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
     inputFile.close();
 }
 
-
-void BitcoinExchange::calcExchangeRate()
+void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim)
 {
-	for (const auto& inputPair : map.input)
+	std::ifstream inputFile(file);
+    if (!inputFile)
+    {
+        throw std::ios_base::failure("Error opening file.");
+    }
+    std::string line;
+	bool firstLine = true;
+	if (checkExtension(file, "txt") && delim == '|')
 	{
-		const std::string& key = inputPair.first;
-		if (!checkDate(key))
-		{
-			std::cerr<< "Error: bad input => "<< key << std::endl;
-			continue ;
-		}
-		float inputValue = inputPair.second;
-		float rateValue;
-		if (inputValue <= 0)
-		{
-			std::cerr << "Error: not a positive number." << std::endl;
-        	continue;
-		}
-		if (inputValue > 1000)
-		{
-			std::cerr << "Error: too large number." << std::endl;
-            continue;
-		}
-		auto rateKey = map.rate.find(key);
-        if (rateKey != map.rate.end())
-		{
-			rateValue = rateKey->second;
-			if (rateValue <= 0)
+		while (std::getline(inputFile, line))
+        {
+            std::stringstream ss(line);
+            std::string date;
+            float value = 0;
+            if (firstLine)
             {
-                std::cerr << "Error: not a positive number."  << std::endl;
-                continue ;
+                firstLine = false;
+                continue;
             }
-		}
-		else{
-			rateKey = map.rate.lower_bound(key);
+        	if (std::getline(ss, date, '|'))
+           	{
+                date.erase(0, date.find_first_not_of(' '));
+                date.erase(date.find_last_not_of(' ') + 1);
+				if (!checkDate(date))
+				{
+					std::cerr<< "Error: bad input => "<< date << std::endl;
+					continue ;
+				}
+                if (ss >> value)
+              	{
+					if (value < 0)
+					{
+						std::cerr << "Error: not a positive number." << std::endl;
+						continue;
+					}
+					if (value > 1000)
+					{
+						std::cerr << "Error: too large number." << std::endl;
+						continue;
+					}
+				}
+         	}
+			float rateValue;
+			auto rateKey = rate.find(date);
+			if (rateKey != rate.end())
+			{
+				rateValue = rateKey->second;
+				if (rateValue <= 0)
+				{
+					std::cerr << "Error: not a positive number."  << std::endl;
+					continue ;
+				}
+			}
+			else{
+			rateKey = rate.lower_bound(date);
 			rateValue = rateKey->second;
-            if (rateKey == map.rate.begin())
+            if (rateKey == rate.begin())
             {
-                std::cerr << "Error: No lower date found for " << key << std::endl;
+                std::cerr << "Error: No lower date found for " << date << std::endl;
                 continue ;
             }
             --rateKey;
-		}
-		float resultValue = rateValue * inputValue;
-		if (resultValue > 2147483647.0)
-		{
-			std::cerr << "Error: value too large" << std::endl;
-			continue ;
-		}	
-		std::ostringstream oss;
-        oss << resultValue;
-        std::string resultStr = oss.str();
-        if (resultStr.find('.') != std::string::npos)
-        {
-            resultStr.erase(resultStr.find_last_not_of('0') + 1, std::string::npos);
-            if (resultStr.back() == '.')
-                resultStr.pop_back();
-        }
-        std::cout << key << " => " << inputValue << " = " << resultStr << std::endl;
+			}
+			float resultValue = rateValue * value;
+			if (resultValue > 2147483647.0)
+			{
+				std::cerr << "Error: value too large" << std::endl;
+				continue ;
+			}	
+			std::ostringstream oss;
+			oss << resultValue;
+			std::string resultStr = oss.str();
+			if (resultStr.find('.') != std::string::npos)
+			{
+				resultStr.erase(resultStr.find_last_not_of('0') + 1, std::string::npos);
+				if (resultStr.back() == '.')
+					resultStr.pop_back();
+			}
+			std::cout << date << " => " << value << " = " << resultStr << std::endl;
+
+			}
 	}
+	else
+	{
+		inputFile.close();
+        throw std::invalid_argument("Invalid file extension or delimiter");
+	}
+	inputFile.close();
 }
+
