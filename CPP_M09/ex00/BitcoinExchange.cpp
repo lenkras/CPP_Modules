@@ -92,7 +92,6 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
 					continue ;
 				date.erase(0, date.find_first_not_of(' '));
 		        date.erase(date.find_last_not_of(' ') + 1);
-				//map.rate[date] += roundToTwoDecimals(value);
 				rate[date] += roundToTwoDecimals(value);
 			}
 		}		
