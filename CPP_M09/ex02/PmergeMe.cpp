@@ -27,33 +27,33 @@ bool PmergeMe::check_input(const std::string &str)
 	addToVector(str);
 	addToDeque(str);
     std::cout << "Before: ";
-    for (int n : array) {
+    for (size_t n : array) {
         std::cout << n << " ";
     }
      std::cout << std::endl;
 	return true;
 }
 
-std::vector<int>& PmergeMe::getArray()
+std::vector<size_t>& PmergeMe::getArray()
 {
 	return array;
 }
 
-std::deque<int>& PmergeMe::getDeque()
+std::deque<size_t>& PmergeMe::getDeque()
 {
 	return arrD;
 }
 
 void PmergeMe::addToVector(const std::string& str)
 {
-	std::unordered_set<int> seen;
+	std::unordered_set<size_t> seen;
 	auto startAdd = std::chrono::high_resolution_clock::now();
 	std::stringstream ss(str);
     std::string temp;
     while (ss >> temp)
 	{
         try {
-            int num = std::stoi(temp);
+            size_t num = std::stoi(temp);
             if (seen.find(num) != seen.end()) {
                 throw std::invalid_argument("Error: duplicates are not allowed.");
             }
@@ -75,7 +75,7 @@ void PmergeMe::addToDeque(const std::string& str)
 	std::string temp;
     while (ss >> temp)
 	{
-        int num = std::stoi(temp);
+        size_t num = std::stoi(temp);
         arrD.push_back(num); 
     }
 	auto endAdd = std::chrono::high_resolution_clock::now();
@@ -83,11 +83,51 @@ void PmergeMe::addToDeque(const std::string& str)
 
 }
 
-std::deque<int> PmergeMe::fordJohnsonDeque(std::deque<int> &array)
+static size_t jacobsthal(size_t k)
+{
+    if (k == 0) return 0;
+    if (k == 1) return 1;
+
+    size_t a = 0, b = 1;  // Initial values for J(0) and J(1)
+    
+    for (size_t i = 2; i <= k; ++i) {
+        size_t temp = b;
+        b = b + 2 * a;  // J(k) = J(k-1) + 2 * J(k-2)
+        a = temp;  // Update J(k-2) for the next iteration
+    }
+    
+    return b;
+}
+
+
+ static std::vector<size_t> getInsertionSequence(size_t size)
+ {
+    std::vector<size_t> sequence;
+    size_t k = 2;
+    while (true) 
+    {
+        size_t j = jacobsthal(k);
+        size_t prev_j = jacobsthal(k-1);
+            
+         if (prev_j >= size)
+            break;
+            
+        for (size_t i = j; i > prev_j; --i)
+        {
+            if (i <= size) {
+                sequence.push_back(i);
+            }
+        }
+        k++;
+    }
+    return sequence;
+}
+
+std::deque<size_t> PmergeMe::fordJohnsonDeque(std::deque<size_t> &array)
 {
 	if (array.size() <= 1)
 		return array;
-	std::vector<std::pair<int, int>> pairs;
+	std::deque<std::pair<size_t, size_t>> pairs;
 	for (size_t i = 0; i < array.size() - 1; i += 2)
 	{
 		if (array[i] < array[i + 1])
@@ -95,92 +135,197 @@ std::deque<int> PmergeMe::fordJohnsonDeque(std::deque<int> &array)
 		else
 			pairs.push_back(std::make_pair(array[i + 1], array[i]));
 	}
-	std::deque<int> large_numbers;
+	std::deque<size_t> large_numbers;
 	for (const auto &pair : pairs)
 	{
 		large_numbers.push_back(pair.second);
 	}
 	large_numbers = fordJohnsonDeque(large_numbers);
 
-	std::deque<int> sorted_array = large_numbers;
-	for (const auto &pair : pairs)
-	{
-		int small_number = pair.first;
-		auto position = std::lower_bound(sorted_array.begin(), sorted_array.end(), small_number);
-		sorted_array.insert(position, small_number);
-	}
+	std::deque<size_t> sorted_array = large_numbers;
 
-	if (array.size() % 2 != 0)
-	{
-		int last_number = array.back();
-		auto position = std::lower_bound(sorted_array.begin(), sorted_array.end(), last_number);
-		sorted_array.insert(position, last_number);
-	}
+	 if (!pairs.empty())
+    {
+           size_t b1 = pairs[0].first;
+           for (const auto& pair: pairs)
+           {
+                if (pair.second == large_numbers[0])
+                {
+                    b1 = pair.first;
+                    break;
+                }
+           }
+            sorted_array.insert(sorted_array.begin(), b1);
+    }
+		
+        std::vector<size_t> insertion_seq = getInsertionSequence(pairs.size());
+
+        
+        for (size_t i : insertion_seq) 
+        {
+            if (i >= 2) 
+            {
+                size_t a_i = large_numbers[i-1];
+                size_t b_i = 0;
+                for(const auto& pair: pairs)
+                {
+                    if (pair.second == a_i)
+                    {
+                        b_i = pair.first;
+                        break;
+                    }
+                }
+                
+                
+                auto end_pos = sorted_array.begin();
+                std::advance(end_pos, std::min(2 * i - 1, static_cast<size_t>(sorted_array.size()))); // Calculate insertion range (2*i - 1 elements)
+                
+                auto pos = std::lower_bound(
+                    sorted_array.begin(),
+                    end_pos,
+                    b_i
+                );
+               sorted_array.insert(pos, b_i);
+            }
+        }
+		if (array.size() % 2 != 0)
+		{
+			size_t last_number = array.back();
+			auto position = std::lower_bound(sorted_array.begin(), sorted_array.end(), last_number);
+			sorted_array.insert(position, last_number);
+		}
+    return sorted_array;
 	
-	return sorted_array;
 }
 
-std::vector<int> PmergeMe::fordJohnsonVector(std::vector<int> &array)
-{
-	if (array.size() <= 1)
-		return array;
-	std::vector<std::pair<int, int>> pairs;
-	for (size_t i = 0; i < array.size() - 1; i += 2)
-	{
-		if (array[i] < array[i + 1])
-			pairs.push_back(std::make_pair(array[i], array[i + 1]));
-		else
-			pairs.push_back(std::make_pair(array[i + 1], array[i]));
-	}
-	std::vector<int> large_numbers;
-	for (const auto &pair : pairs)
-	{
-		large_numbers.push_back(pair.second);
-	}
-	large_numbers = fordJohnsonVector(large_numbers);
+   std::vector<size_t> PmergeMe::fordJohnsonVector(std::vector<size_t>& array)
+   {
+        if (array.size() <= 1) {
+            return array;
+        }
 
-	std::vector<int> sorted_array = large_numbers;
-	for (const auto &pair : pairs)
-	{
-		int small_number = pair.first;
-		auto position = std::lower_bound(sorted_array.begin(), sorted_array.end(), small_number);
-		sorted_array.insert(position, small_number);
-	}
+        std::vector<std::pair<size_t, size_t>> pairs;
 
-	if (array.size() % 2 != 0)
-	{
-		int last_number = array.back();
-		auto position = std::lower_bound(sorted_array.begin(), sorted_array.end(), last_number);
-		sorted_array.insert(position, last_number);
-	}
-	
-	return sorted_array;
-}
+        for (size_t i = 0; i < array.size() - 1; i += 2) {
+            if (array[i] < array[i + 1]) {
+                pairs.push_back(std::make_pair(array[i], array[i + 1]));
+            } else {
+                pairs.push_back(std::make_pair(array[i + 1], array[i]));
+            }
+        }
+        std::cout << "Pair size in the beginning: "<< pairs.size()<<std::endl;
+        std::vector<size_t> larger_elements;
+        for (const auto& pair : pairs)
+        {
+            larger_elements.push_back(pair.second);
+        }
+		
+		std::cout<< "Larger elements array: " << std::endl;
+		for (size_t num : larger_elements) {
+        std::cout << num << " ";
+    	}
+    	std::cout << std::endl;
+        larger_elements = fordJohnsonVector(larger_elements);
 
-void PmergeMe::sortAndprint(std::vector<int> &array, std::deque<int>& arrD)
+
+        std::vector<size_t> main_chain = larger_elements;
+        if (!pairs.empty())
+        {
+           size_t b1 = pairs[0].first;
+           for (const auto& pair: pairs)
+           {
+                if (pair.second == larger_elements[0])
+                {
+                    std::cout<<"Second pair: "<<pair.second<<std::endl;
+                    b1 = pair.first;
+                    std::cout<< "First pair: "<< b1<<std::endl;
+                    break;
+                }
+           }
+            main_chain.insert(main_chain.begin(), b1);
+        }
+
+		std::cout<< "Main chain before inserting: "<<std::endl;
+		for (size_t num : main_chain) {
+        std::cout << num << " ";
+    	}
+   		 std::cout << std::endl;
+        std::cout<< "Pairs size: "<< pairs.size()<< std::endl;
+        std::vector<size_t> insertion_seq = getInsertionSequence(pairs.size());
+
+		std::cout<< "Insertion sequence: "<< std::endl;
+		for (size_t num : insertion_seq) {
+        	std::cout << num << " ";
+    	}
+   		 std::cout << std::endl;
+        
+        for (size_t i : insertion_seq)
+        {
+            if (i >= 2) 
+            {
+                size_t a_i = larger_elements[i-1];
+                std::cout<< "Print large element: "<<a_i<<std::endl;
+                size_t b_i = 0;
+                for(const auto& pair: pairs)
+                {
+                    if (pair.second == a_i)
+                    {
+                        b_i = pair.first;
+                        std::cout << "Small element in loop: "<< b_i << std::endl;
+                        break;
+                    }
+                }
+                
+                // Calculate insertion range (2i - 1 elements)
+                auto end_pos = main_chain.begin();
+                std::advance(end_pos, std::min(2 * i - 1, static_cast<size_t>(main_chain.size())));
+                
+                auto pos = std::lower_bound(
+                    main_chain.begin(),
+                    end_pos,
+                    b_i
+                );
+                std::cout<< "Number before insert in loop: "<< b_i<< std::endl;
+                main_chain.insert(pos, b_i);
+				std::cout<< "Main chain after insertion: "<< std::endl;
+				for (size_t num : main_chain) {
+        			std::cout << num << " ";
+    			}
+    			std::cout << std::endl;
+            }
+        }
+		if (array.size() % 2 != 0)
+		{
+			size_t last_number = array.back();
+			auto position = std::lower_bound(main_chain.begin(), main_chain.end(), last_number);
+			main_chain.insert(position, last_number);
+		}
+        return main_chain;
+    }
+
+void PmergeMe::sortAndprint(std::vector<size_t> &array, std::deque<size_t>& arrD)
 {
 	auto start = std::chrono::high_resolution_clock::now();
-	std::vector<int> sortedArray = fordJohnsonVector(array);
+	std::vector<size_t> sortedArray = fordJohnsonVector(array);
 	auto end = std::chrono::high_resolution_clock::now();
 	std::cout << "After: ";
-	for (int num : sortedArray) {
+	for (size_t num : sortedArray) {
         std::cout << num << " ";
     }
 	std::cout<< std::endl;
 
 	auto startD = std::chrono::high_resolution_clock::now();
-	std::deque<int> sortedArrayD = fordJohnsonDeque(arrD);
+	std::deque<size_t> sortedArrayD = fordJohnsonDeque(arrD);
 	auto endD = std::chrono::high_resolution_clock::now();
 	
 	std::cout << std::fixed << std::setprecision(5);
 	timeSortVector = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	auto duration = timeAddVector + timeSortVector;
     std::cout << "Time to process a range of " << array.size() 
-              << " elements with std::vector: " << duration.count() / 1000.0 << " us" << std::endl;
+              << " elements with std::vector: " << duration.count() / 100.0 << " us" << std::endl;
 	
 	timeSortDeque = std::chrono::duration_cast<std::chrono::microseconds>(endD - startD);
     auto durationDeq = timeAddDeque + timeSortDeque;
 	std::cout << "Time to process a range of " << arrD.size() 
-              << " elements with std::deque: " << durationDeq.count() / 1000.0 << " us" << std::endl;
+              << " elements with std::deque: " << durationDeq.count() / 10.0 << " us" << std::endl;
 }
-

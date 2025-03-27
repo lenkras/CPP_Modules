@@ -21,12 +21,14 @@
 #include <algorithm>
 #include <chrono>
 #include <iomanip>
+#include <map>
+#include <unordered_map>
 
 class PmergeMe
 {
 	private:
-		std::vector<int> array;
-		std::deque<int> arrD;
+		std::vector<size_t> array;
+		std::deque<size_t> arrD;
 		std::chrono::microseconds timeAddVector;
     	std::chrono::microseconds timeAddDeque;
     	std::chrono::microseconds timeSortVector;
@@ -36,14 +38,13 @@ class PmergeMe
 		PmergeMe(){};
 		~PmergeMe(){};
 
-		std::vector<int>& getArray();
-		std::deque<int>& getDeque();
+		std::vector<size_t>& getArray();
+		std::deque<size_t>& getDeque();
 		bool check_input(const std::string &str);
 		void addToVector(const std::string& str);
 		void addToDeque(const std::string& str);
-		std::vector<int> fordJohnsonVector(std::vector<int> &array);
-		std::deque<int> fordJohnsonDeque(std::deque<int> &array);
-		void sortAndprint(std::vector<int> &array, std::deque<int>& arrD);
-
+		std::vector<size_t> fordJohnsonVector(std::vector<size_t> &array);
+		std::deque<size_t> fordJohnsonDeque(std::deque<size_t> &array);
+		void sortAndprint(std::vector<size_t> &array, std::deque<size_t>& arrD);
 
 };
