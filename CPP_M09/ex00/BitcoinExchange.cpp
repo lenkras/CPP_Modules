@@ -107,6 +107,10 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
 
 void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim)
 {
+	if (file[0] == '.')
+	{
+		throw std::runtime_error("file name cannot be a folder");
+	}
 	std::ifstream inputFile(file);
     if (!inputFile)
     {
@@ -153,42 +157,7 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
 					}
 				}
          	}
-			float rateValue;
-			auto rateKey = rate.find(date);
-			if (rateKey != rate.end())
-			{
-				rateValue = rateKey->second;
-				if (rateValue <= 0)
-				{
-					std::cerr << "Error: not a positive number."  << std::endl;
-					continue ;
-				}
-			}
-			else{
-				rateKey = rate.lower_bound(date);
-				rateValue = rateKey->second;
-            	if (rateKey == rate.begin())
-            	{
-               	 	std::cerr << "Error: No lower date found for " << date << std::endl;
-                	continue ;
-            	}
-			}
-			float resultValue = rateValue * value;
-			if (resultValue > 2147483647.0)
-			{
-				std::cerr << "Error: value too large" << std::endl;
-				continue ;
-			}	
-			std::ostringstream oss;
-			oss << resultValue;
-			std::string resultStr = oss.str();
-			if (resultStr.find('.') != std::string::npos)
-			{
-				resultStr.erase(resultStr.find_last_not_of('0') + 1, std::string::npos);
-				if (resultStr.back() == '.')
-					resultStr.pop_back();
-			}
-			std::cout << date << " => " << value << " = " << resultStr << std::endl;
+			processExchangeRate(date, value);
 		}
 	}
 	else
@@ -199,3 +168,53 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
 	inputFile.close();
 }
 
+void BitcoinExchange::processExchangeRate(const std::string& date, float value)
+{
+    float rateValue;
+    auto rateKey = rate.find(date);
+
+    if (rateKey != rate.end())
+    {
+        rateValue = rateKey->second;
+        if (rateValue <= 0)
+        {
+            std::cerr << "Error: not a positive number." << std::endl;
+            return;
+        }
+    }
+    else
+    {
+        rateKey = rate.lower_bound(date);
+        if (rateKey == rate.begin())
+        {
+            std::cerr << "Error: No lower date found for " << date << std::endl;
+            return;
+        }
+        rateValue = rateKey->second;
+    }
+
+    float resultValue = rateValue * value;
+    if (resultValue > 2147483647.0)
+    {
+        std::cerr << "Error: value too large" << std::endl;
+        return;
+    }
+
+    formatAndPrintResult(date, value, resultValue);
+}
+
+void BitcoinExchange::formatAndPrintResult(const std::string& date, float value, float resultValue)
+{
+    std::ostringstream oss;
+    oss << resultValue;
+    std::string resultStr = oss.str();
+
+    if (resultStr.find('.') != std::string::npos)
+    {
+        resultStr.erase(resultStr.find_last_not_of('0') + 1, std::string::npos);
+        if (resultStr.back() == '.')
+            resultStr.pop_back();
+    }
+
+    std::cout << date << " => " << value << " = " << resultStr << std::endl;
+}

@@ -37,4 +37,6 @@ class BitcoinExchange
 		bool checkExtension(const std::string& filename, const std::string& end);
 		bool checkDate(const std::string& date);
 		void calcExchangeRate(const std::string& file, const char delim);
+		void processExchangeRate(const std::string& date, float value);
+		void formatAndPrintResult(const std::string& date, float value, float resultValue);
 };
