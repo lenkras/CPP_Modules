@@ -34,7 +34,7 @@ void RPN::parseString(const std::string& str)
         {
             if (str[i + 1] != ' ' && str[i + 1] != '\0') 
             {
-                throw std::invalid_argument("Error: invalid input (no space or end of line after operand/operator).");
+                throw std::invalid_argument("Error: invalid input (no space or end of line after operator).");
             }
         }
 		if (isdigit(str[i]))

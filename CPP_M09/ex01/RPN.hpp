@@ -26,7 +26,7 @@ class RPN
 		~RPN(){};
 		
 		void parseString(const std::string& str);
-		int applyOperator(int a, int b, char op);
+		int applyOperator(int a, int b, char oper);
 
 
 };
