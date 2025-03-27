@@ -32,7 +32,7 @@ void RPN::parseString(const std::string& str)
 		}
 		if (i + 1 < str.size()) 
         {
-            if (str[i + 1] != ' ' && str[i + 1] != '\0') 
+            if (str[i + 1] != ' ' && str[i + 1] != '\0' )
             {
                 throw std::invalid_argument("Error: invalid input (no space or end of line after operator).");
             }
@@ -50,8 +50,11 @@ void RPN::parseString(const std::string& str)
 			int result = applyOperator(a, b, str[i]);
 			stack.push(result);
 			finalResult = result;
+			if (finalResult > 2147483647.0)
+			{
+				throw std::out_of_range("overflow");
+			}
 		}
-
 	}
 	if (stack.size() != 1) {
         std::cerr << "Error: invalid RPN expression" << std::endl;
