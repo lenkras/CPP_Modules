@@ -41,7 +41,7 @@ bool BitcoinExchange::checkDate(const std::string& date)
 	ss >> year >> dash1 >> month >> dash2 >>day;
 	if (ss.fail() || dash1 != '-' || dash2 != '-')
         return false;
-	if (year < 2000 || year > 2025 || month < 1 || month > 12 || day < 1) {
+	if (year < 2009 || year > 2022 || month < 1 || month > 12 || day < 1) {
         return false;
     }
 	const int daysInEveryMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -73,7 +73,7 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
     std::ifstream inputFile(file);
     if (!inputFile)
     {
-        throw std::ios_base::failure("Error opening file.");
+        throw std::ios_base::failure("cannot open a file.");
     }
 
     std::string line;
@@ -110,25 +110,29 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
 	std::ifstream inputFile(file);
     if (!inputFile)
     {
-        throw std::ios_base::failure("Error opening file.");
+        throw std::ios_base::failure("cannot open a file.");
     }
     std::string line;
-	bool firstLine = true;
-	if (checkExtension(file, "txt") && delim == '|')
+	if (!std::getline(inputFile, line) || line.empty() || line[0] == ' ' || line[0] == '\t')
+	{
+		throw std::runtime_error("empty file");
+	}
+	line.erase(0, line.find_first_not_of(" \t"));
+    line.erase(line.find_last_not_of(" \t") + 1);
+	if (line != "date | value")
+	{
+		throw std::invalid_argument(" invalid first line");
+	}
+	if (delim == '|')
 	{
 		while (std::getline(inputFile, line))
         {
-            std::stringstream ss(line);
+			std::stringstream ss(line);
             std::string date;
             float value = 0;
-            if (firstLine)
-            {
-                firstLine = false;
-                continue;
-            }
         	if (std::getline(ss, date, '|'))
            	{
-                date.erase(0, date.find_first_not_of(' '));
+				date.erase(0, date.find_first_not_of(' '));
                 date.erase(date.find_last_not_of(' ') + 1);
 				if (!checkDate(date))
 				{
@@ -144,7 +148,7 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
 					}
 					if (value > 1000)
 					{
-						std::cerr << "Error: too large number." << std::endl;
+						std::cerr << "Error: too large number. Valid range is from 0 to 1000" << std::endl;
 						continue;
 					}
 				}
@@ -161,14 +165,13 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
 				}
 			}
 			else{
-			rateKey = rate.lower_bound(date);
-			rateValue = rateKey->second;
-            if (rateKey == rate.begin())
-            {
-                std::cerr << "Error: No lower date found for " << date << std::endl;
-                continue ;
-            }
-            --rateKey;
+				rateKey = rate.lower_bound(date);
+				rateValue = rateKey->second;
+            	if (rateKey == rate.begin())
+            	{
+               	 	std::cerr << "Error: No lower date found for " << date << std::endl;
+                	continue ;
+            	}
 			}
 			float resultValue = rateValue * value;
 			if (resultValue > 2147483647.0)
@@ -186,13 +189,12 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
 					resultStr.pop_back();
 			}
 			std::cout << date << " => " << value << " = " << resultStr << std::endl;
-
-			}
+		}
 	}
 	else
 	{
 		inputFile.close();
-        throw std::invalid_argument("Invalid file extension or delimiter");
+        throw std::invalid_argument("Invalid file");
 	}
 	inputFile.close();
 }

@@ -31,11 +31,11 @@ int main(int argc, char** argv)
 	{
 		std::cerr<< "Invalid argument: "<< e.what()<< std::endl;
 	}
-	catch(const std::exception& e){
-		std::cerr<< "Unexpected error: "<<e.what()<< std::endl;
-	}
 	catch(const std::runtime_error& e){
 		std::cerr<< "Error: "<< e.what()<< std::endl;
+	}
+	catch(const std::exception& e){
+		std::cerr<< "Unexpected error: "<<e.what()<< std::endl;
 	}
 	return 0;
 }
