@@ -44,7 +44,7 @@ std::deque<size_t>& PmergeMe::getDeque()
 	return arrD;
 }
 
-static size_t jacobsthal(size_t k)
+static size_t jacobsthal(size_t k) // 1 1 3 5 11 21........
 {
     if (k == 0) return 0;
     if (k == 1) return 1;
@@ -60,8 +60,8 @@ static size_t jacobsthal(size_t k)
     return b;
 }
 
- static std::vector<size_t> getInsertionSequence(size_t size)
- {
+static std::vector<size_t> getInsertionSequence(size_t size)
+{
     std::vector<size_t> sequence;
     size_t k = 2;
     while (true) 
@@ -269,10 +269,10 @@ void PmergeMe::sortAndprint(std::vector<size_t> &array, std::deque<size_t>& arrD
 	timeSortVector = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	auto duration = timeAddVector + timeSortVector;
     std::cout << "Time to process a range of " << array.size() 
-              << " elements with std::vector: " << duration.count() / 1000.0 << " us" << std::endl;
+              << " elements with std::vector: " << duration.count() << " us" << std::endl;
 	
 	timeSortDeque = std::chrono::duration_cast<std::chrono::microseconds>(endD - startD);
     auto durationDeq = timeAddDeque + timeSortDeque;
 	std::cout << "Time to process a range of " << arrD.size() 
-              << " elements with std::deque: " << durationDeq.count() / 1000.0 << " us" << std::endl;
+              << " elements with std::deque: " << durationDeq.count() << " us" << std::endl;
 }
