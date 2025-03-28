@@ -41,7 +41,7 @@ bool BitcoinExchange::checkDate(const std::string& date)
 	ss >> year >> dash1 >> month >> dash2 >>day;
 	if (ss.fail() || dash1 != '-' || dash2 != '-')
         return false;
-	if (year < 2009 || year > 2022 || month < 1 || month > 12 || day < 1) {
+	if (year < 2009 || year > 2025 || month < 1 || month > 12 || day < 1) {
         return false;
     }
 	const int daysInEveryMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -107,65 +107,105 @@ void BitcoinExchange::parseFile(const std::string& file, const char delim)
 
 void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim)
 {
-	if (file[0] == '.')
-	{
-		throw std::runtime_error("file name cannot be a folder");
-	}
-	std::ifstream inputFile(file);
+    std::ifstream inputFile(file);
     if (!inputFile)
     {
         throw std::ios_base::failure("cannot open a file.");
     }
+    
     std::string line;
-	if (!std::getline(inputFile, line) || line.empty() || line[0] == ' ' || line[0] == '\t')
-	{
-		throw std::runtime_error("empty file");
-	}
-	line.erase(0, line.find_first_not_of(" \t"));
+    if (!std::getline(inputFile, line) || line.empty())
+    {
+        throw std::runtime_error("empty file");
+    }
+    line.erase(0, line.find_first_not_of(" \t"));
     line.erase(line.find_last_not_of(" \t") + 1);
-	if (line != "date | value")
-	{
-		throw std::invalid_argument(" invalid first line");
-	}
-	if (delim == '|')
-	{
-		while (std::getline(inputFile, line))
+    
+    if (line != "date | value")
+    {
+        throw std::invalid_argument("invalid first line");
+    }
+
+    if (delim == '|')
+    {
+        while (std::getline(inputFile, line))
         {
-			std::stringstream ss(line);
+            std::stringstream ss(line);
             std::string date;
-            float value = 0;
-        	if (std::getline(ss, date, '|'))
-           	{
-				date.erase(0, date.find_first_not_of(' '));
+            std::string value;
+            float num = 0;
+
+            if (std::getline(ss, date, '|'))
+            {
+                date.erase(0, date.find_first_not_of(' '));
                 date.erase(date.find_last_not_of(' ') + 1);
-				if (!checkDate(date))
-				{
-					std::cerr<< "Error: bad input => "<< date << std::endl;
-					continue ;
-				}
+				std::time_t t = std::time(nullptr);
+				std::tm* now = std::localtime(&t);
+				char current_date[11];
+				std::strftime(current_date, sizeof(current_date), "%Y-%m-%d", now);
+				if (!checkDate(date) || date > current_date)
+                {
+                    std::cerr << "Error: bad input => " << date << std::endl;
+                    continue;
+                }
                 if (ss >> value)
-              	{
-					if (value < 0)
-					{
-						std::cerr << "Error: not a positive number." << std::endl;
-						continue;
-					}
-					if (value > 1000)
-					{
-						std::cerr << "Error: too large number. Valid range is from 0 to 1000" << std::endl;
-						continue;
-					}
-				}
-         	}
-			processExchangeRate(date, value);
-		}
-	}
-	else
-	{
-		inputFile.close();
+                {
+                    value.erase(0, value.find_first_not_of(' '));
+                    value.erase(value.find_last_not_of(' ') + 1);
+
+                    bool valid = true;
+                    size_t dot_count = 0;
+                    for (size_t i = 0; i < value.size(); ++i)
+                    {
+                        char c = value[i];
+                        if (i == 0 && c == '-') {
+                            continue;
+                        }
+                        else if (c == '.' && ++dot_count <= 1) {
+                            continue;
+                        }
+                        else if (!isdigit(c)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if (!valid)
+                    {
+                        std::cerr << "Error: invalid value format => " << value << std::endl;
+                        continue;
+                    }
+
+                    try {
+                        num = std::stof(value);
+                        
+                        if (num <= 0) {
+                            std::cerr << "Error: not a positive number." << std::endl;
+                            continue;
+                        }
+                        if (num > 1000) {
+                            std::cerr << "Error: too large a number." << std::endl;
+                            continue;
+                        }
+                    }
+                    catch (...) {
+                        std::cerr << "Error: invalid number => " << value << std::endl;
+                        continue;
+                    }
+                    processExchangeRate(date, num);
+                }
+                else
+                {
+                    std::cerr << "Error: missing value for date " << date << std::endl;
+                }
+            }
+        }
+    }
+    else
+    {
+        inputFile.close();
         throw std::invalid_argument("Invalid file");
-	}
-	inputFile.close();
+    }
+    inputFile.close();
 }
 
 void BitcoinExchange::processExchangeRate(const std::string& date, float value)
@@ -190,6 +230,7 @@ void BitcoinExchange::processExchangeRate(const std::string& date, float value)
             std::cerr << "Error: No lower date found for " << date << std::endl;
             return;
         }
+		--rateKey;
         rateValue = rateKey->second;
     }
 

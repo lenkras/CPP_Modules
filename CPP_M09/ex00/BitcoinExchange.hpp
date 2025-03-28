@@ -23,7 +23,7 @@
 #include <ctime>
 #include <iomanip>
 #include <cmath>
-
+#include <chrono>
 
 class BitcoinExchange
 {
