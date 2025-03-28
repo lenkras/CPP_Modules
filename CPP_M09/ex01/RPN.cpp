@@ -50,7 +50,7 @@ void RPN::parseString(const std::string& str)
 			int result = applyOperator(a, b, str[i]);
 			stack.push(result);
 			finalResult = result;
-			if (finalResult > 2147483647.0)
+			if (finalResult > INT_MAX || finalResult < INT_MIN)
 			{
 				throw std::out_of_range("overflow");
 			}
@@ -68,10 +68,16 @@ int RPN::applyOperator(int a, int b, char oper)
 {
     switch (oper) {
         case '+': 
+			if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b))
+				throw std::overflow_error(" overflow");
 			return a + b;
         case '-': 
+			if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b))
+				throw std::overflow_error(" overflow");
 			return a - b;
         case '*': 
+			if (a > INT_MAX / b || a < INT_MIN / b)
+				throw std::overflow_error("overflow");
 			return a * b;
         case '/':
             if (b == 0) {

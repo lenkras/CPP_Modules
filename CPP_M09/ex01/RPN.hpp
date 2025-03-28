@@ -13,9 +13,8 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
-#include <deque>
 #include <stack>
+#include <climits>
 
 class RPN
 {
