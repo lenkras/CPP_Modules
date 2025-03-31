@@ -56,7 +56,6 @@ static size_t jacobsthal(size_t k) // 1 1 3 5 11 21........
         b = b + 2 * a;  // J(k) = J(k-1) + 2 * J(k-2)
         a = temp;  // Update J(k-2) for the next iteration
     }
-    
     return b;
 }
 
@@ -265,7 +264,7 @@ void PmergeMe::sortAndprint(std::vector<size_t> &array, std::deque<size_t>& arrD
 	std::deque<size_t> sortedArrayD = fordJohnsonDeque(arrD);
 	auto endD = std::chrono::high_resolution_clock::now();
 	
-	std::cout << std::fixed << std::setprecision(5);
+	std::cout << std::fixed << std::setprecision(2);
 	timeSortVector = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	auto duration = timeAddVector + timeSortVector;
     std::cout << "Time to process a range of " << array.size() 

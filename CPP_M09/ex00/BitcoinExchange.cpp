@@ -174,11 +174,10 @@ void BitcoinExchange::calcExchangeRate(const std::string& file, const char delim
                         std::cerr << "Error: invalid value format => " << value << std::endl;
                         continue;
                     }
-
                     try {
                         num = std::stof(value);
                         
-                        if (num <= 0) {
+                        if (num < 0) {
                             std::cerr << "Error: not a positive number." << std::endl;
                             continue;
                         }
