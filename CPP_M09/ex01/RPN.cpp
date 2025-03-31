@@ -19,7 +19,7 @@ void RPN::parseString(const std::string& str)
 		throw std::invalid_argument("Error: empty string.");
 	if (str.size() < 3)
 	{
-		throw std::invalid_argument("Error: not enough operands for operation");
+		throw std::invalid_argument("not enough operands for operation");
 	}
 	for (size_t i = 0; i < str.size(); i++)
 	{
@@ -43,6 +43,10 @@ void RPN::parseString(const std::string& str)
 		}
 		else if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 		{
+			if (stack.size() < 2)
+            {
+                throw std::invalid_argument("not enough operands for operation");
+            }
 			int b = stack.top();
 			stack.pop();
 			int a = stack.top();
@@ -81,7 +85,6 @@ int RPN::applyOperator(int a, int b, char oper)
 			return a * b;
         case '/':
             if (b == 0) {
-                std::cerr << "Error: division by zero" << std::endl;
                 throw std::invalid_argument("division by zero");
             }
             return a / b;
